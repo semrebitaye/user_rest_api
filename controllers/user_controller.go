@@ -33,3 +33,23 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 
 }
+
+// get all users from the database
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// connect to db
+	db := initializer.ConnectToDb()
+	defer db.Close()
+
+	// creating user slice and select all from the database
+	var users []models.User
+	if err := db.Model(&users).Select(); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// returning product
+	json.NewEncoder(w).Encode(users)
+}
