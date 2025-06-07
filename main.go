@@ -18,6 +18,7 @@ func main() {
 	r.HandleFunc("/users", controllers.CreateUser).Methods("Post")
 	r.HandleFunc("/users", controllers.GetUser).Methods("GET")
 	r.HandleFunc("/user/{id}", controllers.GetUserById).Methods("GET")
+	r.HandleFunc("/user/{id}", controllers.DeleteUser).Methods("DELETE")
 
 	// user := models.User{ID: 1, FirstName: "semre", LastName: "Bitaye", UserName: "semro", Password: "semreman"}
 	// fmt.Println(user)

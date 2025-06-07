@@ -84,3 +84,28 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 	// return product
 	json.NewEncoder(w).Encode(user)
 }
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "json/application")
+
+	// connect to db
+	db := initializer.ConnectToDb()
+	defer db.Close()
+
+	// get id of url
+	params := mux.Vars(r)
+	userId := params["id"]
+
+	// get the user based on the req id and delete it
+	product := &models.User{}
+	result, err := db.Model(product).Where("id = ?", userId).Delete()
+	// or we can use
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// return result
+	json.NewEncoder(w).Encode(result)
+}
