@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"user_rest_api/initializer"
 	"user_rest_api/models"
+
+	"github.com/gorilla/mux"
 )
 
 // Create user
@@ -52,4 +55,32 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	// returning product
 	json.NewEncoder(w).Encode(users)
+}
+
+// get single user with pk
+func GetUserById(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "json/application")
+
+	// connect to db
+	db := initializer.ConnectToDb()
+	defer db.Close()
+
+	// get id
+	params := mux.Vars(r)
+	userId := params["id"]
+	userID, err := strconv.Atoi(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// get the user by the id
+	user := &models.User{ID: userID}
+	if err := db.Model(user).WherePK().Select(); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// return product
+	json.NewEncoder(w).Encode(user)
 }
