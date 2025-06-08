@@ -109,3 +109,33 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	// return result
 	json.NewEncoder(w).Encode(result)
 }
+
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "json/application")
+
+	// connect to db
+	db := initializer.ConnectToDb()
+	defer db.Close()
+
+	// get the id of url
+	params := mux.Vars(r)
+	userId := params["id"]
+	userID, err := strconv.Atoi(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// get the user and update based of the id of the req
+	user := &models.User{ID: userID}
+	_ = json.NewDecoder(r.Body).Decode(&user)
+
+	_, err = db.Model(user).WherePK().Set("first_name = ?, last_name = ?, user_name = ?, password = ?", user.FirstName, user.LastName, user.UserName, user.Password).Update()
+
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(user)
+}
