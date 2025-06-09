@@ -19,8 +19,14 @@ func main() {
 	r.HandleFunc("/users", controllers.CreateUser).Methods("Post")
 	r.HandleFunc("/users", controllers.GetUser).Methods("GET")
 	r.HandleFunc("/user/{id}", controllers.GetUserById).Methods("GET")
+<<<<<<< HEAD
 	r.HandleFunc("/user/{id}", controllers.UpdateUser).Methods("PATCH")
 	r.HandleFunc("/user/{id}", controllers.DeleteUser).Methods("DELETE")
+=======
+	r.HandleFunc("/user/{id}", controllers.DeleteUser).Methods("DELETE")
+	r.HandleFunc("/user/{id}", controllers.UpdateUser).Methods("PATCH")
+	r.HandleFunc("/login", controllers.Login).Methods("Post")
+>>>>>>> login
 
 	// user := models.User{ID: 1, FirstName: "semre", LastName: "Bitaye", UserName: "semro", Password: "semreman"}
 	// fmt.Println(user)
