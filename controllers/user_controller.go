@@ -31,7 +31,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Hash the password
-	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -178,6 +178,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.User
+	user.UserName = body.Username
 	db.Model(&user).First()
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
